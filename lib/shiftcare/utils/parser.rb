@@ -23,7 +23,7 @@ module Shiftcare
           raise "Empty JSON file: #{path}" if content.strip.empty?
           Yajl::Parser.parse(content, symbolize_keys: true)
         else
-          raise MissingFile, "JSON schema is required: #{path}"
+          raise MissingFile, "JSON is required at: #{path}"
         end
       end
 

@@ -1,0 +1,13 @@
+{
+  "filename": "/Users/bricefrancisco/Documents/dev/client_search_cli/spec/lib/fixtures/empty.json",
+  "size": 2,
+  "root_type": "Array",
+  "duplicates_count": 0,
+  "duplicates": {},
+  "record_length": 0,
+  "keys": [],
+  "generated_at": "2025-08-02 05:05:49 +0800",
+  "schema_path": "/Users/bricefrancisco/Documents/dev/client_search_cli/spec/lib/fixtures/empty.schema.json",
+  "invalid_items_indexes": [],
+  "invalid_items_count": 0
+}

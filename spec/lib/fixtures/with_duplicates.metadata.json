@@ -1,0 +1,34 @@
+{
+  "filename": "/Users/bricefrancisco/Documents/dev/client_search_cli/spec/lib/fixtures/with_duplicates.json",
+  "size": 3692,
+  "root_type": "Array",
+  "duplicates_count": 1,
+  "duplicates": {
+    "jane.smith@yahoo.com": [
+      {
+        "1": {
+          "id": 2,
+          "full_name": "Jane Smith",
+          "email": "jane.smith@yahoo.com"
+        }
+      },
+      {
+        "14": {
+          "id": 15,
+          "full_name": "Another Jane Smith",
+          "email": "jane.smith@yahoo.com"
+        }
+      }
+    ]
+  },
+  "record_length": 35,
+  "keys": [
+    "id",
+    "full_name",
+    "email"
+  ],
+  "generated_at": "2025-08-02 05:05:49 +0800",
+  "schema_path": "/Users/bricefrancisco/Documents/dev/client_search_cli/spec/lib/fixtures/with_duplicates.schema.json",
+  "invalid_items_indexes": [],
+  "invalid_items_count": 0
+}

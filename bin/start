@@ -5,16 +5,28 @@ require_relative '../lib/shiftcare'
 require 'irb'
 require 'pry'
 
-json_name = 'invalid.json'
+json_name = 'clients.json'
 
 print "Preparing paths..\n"
 Shiftcare::Utils::Generators::Directory.generate_paths
 print "Fetching data source\n"
 Shiftcare::Utils::Downloader.new.call(json_name)
-print "Analyzing data\n"
+print "Loading data\n"
 json_details = Shiftcare::Data.new(json_name)
 print "Creating JSON metadata\n"
+# if json_details.metadata.parser.check_file
+# print "Using existing metadata\n"
+# else
 json_details.metadata.generate
+# end
+result = json_details.query.where(full_name: "jane")
+print "Query results:\n"
+print result
+
+duplicates = json_details.query.duplicates
+print "Duplicate results:\n"
+print duplicates
+# Shiftcare::Query.new(json_details)
 # json_metadata.generate
 # json_schema = Shiftcare::Data::Schema.new(json_name)
 # json_schema.validate_json

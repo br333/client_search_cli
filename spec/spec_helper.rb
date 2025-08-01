@@ -16,7 +16,19 @@
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require 'webmock/rspec'
-require_relative '../lib/shiftcare'
+
+%w[
+  data
+  data/schema
+  data/metadata
+  data/query
+  utils/base
+  utils/downloader
+  utils/parser
+  utils/generators/directory
+  utils/generators/metadata
+  configuration
+].each { |file| require "shiftcare/#{file}" }
 
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
