@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'json'
+
+# Generate 1,000 sample entries
+data = (1..1_000_000_00).map do |i|
+  {
+    "id" => i,
+    "full_name" => "User #{i}",
+    "email" => "user#{i}@gmail.com"
+  }
+end
+
+# Export to JSON file
+File.open("./.exchange_layer/files/enormous_data.json", "w") do |f|
+  f.write(JSON.pretty_generate(data))
+end
+
+puts "✅ Generated enormous_data.json with #{data.size} entries"

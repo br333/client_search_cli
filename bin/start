@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../lib/shiftcare'
+require 'irb'
+require 'pry'
+
+json_name = 'invalid.json'
+
+print "Preparing paths..\n"
+Shiftcare::Utils::Generators::Directory.generate_paths
+print "Fetching data source\n"
+Shiftcare::Utils::Downloader.new.call(json_name)
+print "Analyzing data\n"
+json_details = Shiftcare::Data.new(json_name)
+print "Creating JSON metadata\n"
+json_details.metadata.generate
+# json_metadata.generate
+# json_schema = Shiftcare::Data::Schema.new(json_name)
+# json_schema.validate_json
+
+
+# Search and filter
+# binding.pry
