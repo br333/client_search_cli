@@ -7,6 +7,7 @@ $LOAD_PATH.unshift(lib_path) unless $LOAD_PATH.include?(lib_path)
   data
   data/schema
   data/metadata
+  data/query
   utils/base
   utils/downloader
   utils/parser

@@ -1,10 +1,15 @@
 require 'yajl'
 require 'json'
-require 'yajl'
+require 'pathname'
+
 module Shiftcare
   module Utils
     class Parser < Base
+
       class UnsupportedFileType < StandardError; end
+      class FileNameError < StandardError; end
+      class MissingFile < StandardError; end
+
       attr_reader :type, :file_name, :file
 
       def initialize(type, file_name)
@@ -13,32 +18,40 @@ module Shiftcare
       end
 
       def parse
-        Yajl::Parser.parse(path.read)
+        if check_file
+          content = path.read
+          raise "Empty JSON file: #{path}" if content.strip.empty?
+          Yajl::Parser.parse(content, symbolize_keys: true)
+        else
+          raise MissingFile, "JSON schema is required: #{path}"
+        end
       end
-      
+
       def size
+        return 0 unless check_file
         path.size
       end
-      
+
       def full_path
-        path.path
+        path.to_s
       end
-      
+
+      def check_file
+        path.exist?
+      end
+
       private
 
       def path
-        raise FileNameError, "Json File name must be present" if @file_name.nil? || @file_name.empty?
-        case @type
-        when 'data'
-          @file = File.new("#{Utils::Base.download_dir}#{@file_name}", 'r')
-        when 'schema'
-          @file = File.new("#{Utils::Base.schema_dir}#{@file_name}", 'r')
-        when 'metadata'
-          @file = File.new("#{Utils::Base.metadata_dir}#{@file_name}", 'r')
-        else
-          raise UnsupportedFileType, 'File type is unsupported'
-        end
-        raise MissingFile, "Json File is not present" unless File.exist?(@file)
+        valid_types = {
+          'data'     => Base.download_dir,
+          'schema'   => Base.schema_dir,
+          'metadata' => Base.metadata_dir
+        }
+
+        base_dir = valid_types[@type] 
+        raise UnsupportedFileType, "File type '#{@type}' is unsupported" if base_dir.nil?
+        @file = Pathname.new(File.join(base_dir, @file_name))
         @file
       end
     end

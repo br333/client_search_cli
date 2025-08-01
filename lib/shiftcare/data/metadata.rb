@@ -7,10 +7,8 @@ module Shiftcare
   class Data::Metadata
     class InvalidInstance < StandardError; end
 
-    attr_accessor :size, :root_type, :record_length, 
-                  :duplicates_count, :keys, :generated_at, 
-                  :metadata_file, :file_name, :data_instance,
-                  :validate_schema
+    attr_reader   :metadata_values,
+                  :file, :file_name, :data_instance, :parser, :duplicates
 
     def initialize(data_instance)
       unless data_instance.instance_of?(Shiftcare::Data)
@@ -22,22 +20,11 @@ module Shiftcare
     end
 
     def generate
-      Utils::Generators::Metadata.generate(to_h, metadata_name)
+      Utils::Generators::Metadata.generate(build_metadata, metadata_name)
     end
 
     def to_h
-      meta = {
-        filename: file_name,
-        size: size,
-        root_type: root_type,
-        duplicates_count: duplicates_count,
-        record_length: record_length,
-        keys: keys,
-        generated_at: generated_at,
-        schema_path: @data_instance.schema.file_path,
-        invalid_items_indexes: @data_instance.schema.invalid_items_indexes,
-        invalid_items_count: @data_instance.schema.invalid_items_count
-      }
+      parser.parse
    end
 
     private
@@ -47,21 +34,32 @@ module Shiftcare
     end
 
     def duplicates
-      @data_instance.all
-                    .group_by { |item| item["email"] }
-                    .select   { |_k, v| v.size > 1 }
-                    .count
+      @duplicates ||= @data_instance.all.each_with_index
+        .group_by { |(item, _ind)| item[:email] }
+        .select { |_email, records| records.size > 1 }
+        .transform_values { |records| records.map { |item, ind| {"#{ind}": item} } }
+    end
+
+    def build_metadata
+      @data_instance.schema.validate!
+      @metadata_values = {
+          filename: @data_instance.parser.full_path,
+          size: @data_instance.parser.size,
+          root_type: @data_instance.all.class.to_s,
+          duplicates_count: duplicates.count,
+          duplicates: duplicates,
+          record_length: @data_instance.all.length,
+          keys: @data_instance.all.map(&:keys).uniq.flatten,
+          generated_at: Time.now,
+          schema_path: @data_instance.schema.file,
+          invalid_items_indexes: @data_instance.schema.invalid_items_indexes,
+          invalid_items_count: @data_instance.schema.invalid_items_count,
+        }
     end
 
     def set_defaults
-      self.file_name        = @data_instance.parser.full_path
-      self.size             = @data_instance.parser.size
-      self.root_type        = @data_instance.all.class.to_s
-      self.duplicates_count = duplicates
-      self.record_length    = @data_instance.all.length
-      self.keys             = @data_instance.all.map(&:keys).uniq.flatten
-      self.generated_at     = Time.now
-      # self.validate_schema  = validate_schema || true
+      @parser           = Utils::Parser.new('metadata', metadata_name)
+      @file             = parser.file
     end
   end
 end

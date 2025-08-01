@@ -4,7 +4,9 @@ require 'json'
 require 'json-schema'
 module Shiftcare
   class Data::Schema
-    attr_reader :errors, :file_path
+    
+    attr_reader :errors, :file, :parser, :data_instance, :properties
+
     def initialize(data_instance)
       unless data_instance.instance_of?(Shiftcare::Data)
         raise InvalidInstance, "Only accepts instance of Shiftcare::Data got #{data_instance.class}"
@@ -12,18 +14,21 @@ module Shiftcare
 
       @data_instance = data_instance
       set_defaults
-      validate!
     end
 
     def validate!
-      @errors = @data_instance.all.map.with_index do |item, id|
-        error = JSON::Validator.fully_validate(definition, item)
-        { index: id, errors: error} unless error.empty?
-      end.compact
+      if @parser.check_file
+        @errors = @data_instance.all.map.with_index do |item, id|
+          error = JSON::Validator.fully_validate(definition, item)
+          { index: id, errors: error} unless error.empty?
+        end.compact
+      else
+        print "Skipping schema validation, since schema file is not found! \n"
+      end
     end
 
     def definition
-      JSON.parse(File.read(@file_path))
+      @parser.parse
     end
 
     def invalid_items_indexes
@@ -34,6 +39,10 @@ module Shiftcare
       @errors.count
     end
 
+    def properties
+      definition[:properties]
+    end
+
     private
 
     def schema_name
@@ -42,7 +51,8 @@ module Shiftcare
 
     def set_defaults
       @errors = []
-      @file_path = "#{Utils::Base.schema_dir}#{schema_name}"
+      @parser = Utils::Parser.new('schema', schema_name)
+      @file   = @parser.full_path
     end
   end
 end
