@@ -27,7 +27,7 @@
     "full_name",
     "email"
   ],
-  "generated_at": "2025-08-02 05:05:49 +0800",
+  "generated_at": "2025-08-02 05:15:14 +0800",
   "schema_path": "/Users/bricefrancisco/Documents/dev/client_search_cli/spec/lib/fixtures/with_duplicates.schema.json",
   "invalid_items_indexes": [],
   "invalid_items_count": 0
