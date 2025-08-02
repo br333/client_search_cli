@@ -84,7 +84,7 @@ when 'duplicates'
 when 'query'
   if options[:query] && !options[:query].empty?
     results = data.query.where(options[:query])
-    puts "Found #{results.size} record(s):".green
+    puts "Found #{results&.size || 0} record(s):".green
     ap results, indent: 2
   else
     puts 'Filter requires --query and --value'.yellow

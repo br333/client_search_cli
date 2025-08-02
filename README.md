@@ -113,7 +113,7 @@ Querying data using a single `key`
 
 ```bash
 # Query data using `full_name`
-./bin/start query -f clients.json -q full_name='jane' 
+./bin/start query -f clients.json -q full_name=jane
 ```
 
 Output:
@@ -140,7 +140,7 @@ Querying data using multiple `key`
 
 ```bash
 # Query data using `full_name` and `email`
-./bin/start query -f clients.json -q full_name='jane' -q email='jane' 
+./bin/start query -f clients.json -q full_name=jane -q email=jane
 ```
 
 Output:
