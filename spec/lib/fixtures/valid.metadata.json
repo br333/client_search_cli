@@ -10,7 +10,7 @@
     "full_name",
     "email"
   ],
-  "generated_at": "2025-08-02 05:15:14 +0800",
+  "generated_at": "2025-08-02 05:21:33 +0800",
   "schema_path": "/Users/bricefrancisco/Documents/dev/client_search_cli/spec/lib/fixtures/valid.schema.json",
   "invalid_items_indexes": [],
   "invalid_items_count": 0

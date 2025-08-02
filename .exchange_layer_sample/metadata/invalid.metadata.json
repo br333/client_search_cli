@@ -1,0 +1,56 @@
+{
+  "filename": "./.exchange_layer/files/invalid.json",
+  "size": 3564,
+  "root_type": "Array",
+  "duplicates_count": 2,
+  "duplicates": {
+    "jane.smith@yahoo.com": [
+      {
+        "1": {
+          "id": 2,
+          "full_name": "Jane Smith",
+          "email": "jane.smith@yahoo.com"
+        }
+      },
+      {
+        "14": {
+          "id": 15,
+          "full_name": "Another Jane Smith",
+          "email": "jane.smith@yahoo.com"
+        }
+      }
+    ],
+    "victoria.phillips@aol.com": [
+      {
+        "34": {
+          "id": 35,
+          "full_name": "Victoria Phillips",
+          "email": "victoria.phillips@aol.com"
+        }
+      },
+      {
+        "35": {
+          "id": 35,
+          "full_name": "Victoria Phillips",
+          "email": "victoria.phillips@aol.com"
+        }
+      }
+    ]
+  },
+  "record_length": 37,
+  "keys": [
+    "id",
+    "full_name",
+    "email",
+    "id",
+    "full_nam",
+    "data",
+    "ema"
+  ],
+  "generated_at": "2025-08-02 12:14:52 +0800",
+  "schema_path": "./.exchange_layer/schema/invalid.schema.json",
+  "invalid_items_indexes": [
+    36
+  ],
+  "invalid_items_count": 1
+}

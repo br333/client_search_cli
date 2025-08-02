@@ -1,0 +1,17 @@
+{
+  "filename": "./.exchange_layer/files/enormous_data.json",
+  "size": 94666690,
+  "root_type": "Array",
+  "duplicates_count": 0,
+  "duplicates": {},
+  "record_length": 1000000,
+  "keys": [
+    "id",
+    "full_name",
+    "email"
+  ],
+  "generated_at": "2025-08-02 04:03:22 +0800",
+  "schema_path": "./.exchange_layer/schema/enormous_data.schema.json",
+  "invalid_items_indexes": [],
+  "invalid_items_count": 0
+}

@@ -1,36 +1,92 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
+require 'colorize'
+require 'awesome_print'
 require_relative '../lib/shiftcare'
-require 'irb'
-require 'pry'
 
-json_name = 'clients.json'
+options = {}
+options[:query] = {}
+commands = %w[duplicates query]
 
-print "Preparing paths..\n"
+opt_parser = OptionParser.new do |opts|
+  opts.banner = "Usage: json-parser [command] [options]\n\nCommands: duplicates, query"
+
+  opts.on("-f", "--file FILE", "JSON file name, i.e --file clients.json") do |f|
+    options[:file] = f
+  end
+
+  opts.on("-q", "--query KEY=VALUE", "Query JSON content i.e --query KEY=VAL") do |val|
+    k, v = val.split("=")
+    parsed_value = if v =~ /\A\d+\z/
+      v.to_i
+    else
+      v
+    end
+    options[:query][k.to_sym] = parsed_value
+  end
+
+  opts.on("-m", "--metadata", "Force generation of metadata even if it exists") do |val|
+    options[:generate_metadata] = true
+  end
+
+  opts.on("-s", "--schema", "Validate JSON against schema") do |val|
+    options[:validate_schema] = true
+  end
+
+  opts.on("-h", "--help", "Show help") do
+    puts opts
+    exit
+  end
+end
+
+command = ARGV.shift
+opt_parser.parse!
+
+file = options[:file] || 'clients.json'
+
+unless commands.include?(command)
+  puts "Invalid or missing command. Available: #{commands.join(', ')}"
+  exit 1
+end
+
+puts "Preparing paths...".light_blue
 Shiftcare::Utils::Generators::Directory.generate_paths
-print "Fetching data source\n"
-Shiftcare::Utils::Downloader.new.call(json_name)
-print "Loading data\n"
-json_details = Shiftcare::Data.new(json_name)
-print "Creating JSON metadata\n"
-# if json_details.metadata.parser.check_file
-# print "Using existing metadata\n"
-# else
-json_details.metadata.generate
-# end
-result = json_details.query.where(full_name: "jane")
-print "Query results:\n"
-print result
+puts "Fetching data source...".light_blue
+Shiftcare::Utils::Downloader.new.call(file)
+puts "Loading data...".light_blue
+data = Shiftcare::Data.new(file)
 
-duplicates = json_details.query.duplicates
-print "Duplicate results:\n"
-print duplicates
-# Shiftcare::Query.new(json_details)
-# json_metadata.generate
-# json_schema = Shiftcare::Data::Schema.new(json_name)
-# json_schema.validate_json
+if options[:generate_metadata]
+  puts "Generating metadata (forced)...".light_blue
+  data.metadata.generate
+elsif data.metadata.parser.check_file
+  puts "Using existing metadata located at #{data.metadata.parser.full_path}".green
+else
+  puts "Metadata not found, generating...".yellow
+  data.metadata.generate
+end
 
+if options[:validate_schema]
+  puts "Validating schema...".light_blue
+  data.schema.validate!
+  puts "Invalid items count: #{data.schema.invalid_items_count}".red
+  puts "Invalid indexes: #{data.schema.invalid_items_indexes.inspect}".yellow
+else
+  puts "Skipping schema validation...".light_blue
+end
 
-# Search and filter
-# binding.pry
+case command
+when "duplicates"
+    puts "Duplicates:".yellow
+    ap data.query.duplicates
+when "query"
+  if options[:query] && !options[:query].empty?
+    results = data.query.where(options[:query]) 
+    puts "Found #{results.size} record(s):".green
+    ap results, indent: 2
+  else
+    puts "Filter requires --query and --value".yellow
+  end
+end

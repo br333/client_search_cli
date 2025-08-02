@@ -1,0 +1,34 @@
+{
+  "filename": "./.exchange_layer/files/clients.json",
+  "size": 3340,
+  "root_type": "Array",
+  "duplicates_count": 1,
+  "duplicates": {
+    "jane.smith@yahoo.com": [
+      {
+        "1": {
+          "id": 2,
+          "full_name": "Jane Smith",
+          "email": "jane.smith@yahoo.com"
+        }
+      },
+      {
+        "14": {
+          "id": 15,
+          "full_name": "Another Jane Smith",
+          "email": "jane.smith@yahoo.com"
+        }
+      }
+    ]
+  },
+  "record_length": 35,
+  "keys": [
+    "id",
+    "full_name",
+    "email"
+  ],
+  "generated_at": "2025-08-02 12:53:07 +0800",
+  "schema_path": "./.exchange_layer/schema/clients.schema.json",
+  "invalid_items_indexes": [],
+  "invalid_items_count": 0
+}

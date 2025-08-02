@@ -1,10 +1,8 @@
 # Shiftcare Data CLI
 
-  
+Command-line tool for downloading, validating, and analyzing JSON datasets.
 
-A Ruby command-line tool for downloading, validating, and analyzing JSON datasets.
-
-It can generate `metadata`, validate data against JSON schemas, and run filters or queries.
+It can generate `metadata`, validate data against JSON `schemas`, and run `queries`.
 
 ---
 
@@ -16,18 +14,22 @@ It can generate `metadata`, validate data against JSON schemas, and run filters 
 
 - Generate metadata (keys, size, duplicates, record count)
 
-- Query and filter data
+- Query data
 
 - Detect duplicates with indexes
 
-- Simple, modular architecture
+- Folder generation for data storage
 
 ---
 ## Project Structure
 ```
 cli/
+    .exchange_layer/ # Generated
+    .exchange_layer_sample/
     bin/
-        cli.rb
+        start.rb
+        console.rb
+        generate_json.rb
     lib/
         shiftcare/
             data.rb
@@ -57,7 +59,8 @@ cli/
 
 ---
 ## Installation
-  
+
+1. Download project 
 2. Install dependencies:
 
 ```bash
@@ -65,6 +68,7 @@ cli/
 bundle install
 
 ```
+3. `exchange_layer_sample` is provided in this project. You can rename this to `.exchange_layer` in order to test `./bin/start` without downloading `JSON` files and creating `schemas`.
 
 ---
 ## Configuration
@@ -91,50 +95,116 @@ end
 
 ---
 ## Usage
-### Generate Metadata
-  
 
-### Query Data
+```bash
+Usage: json-parser [command] [options]
 
+Commands: duplicates, query
+    -f, --file FILE                  JSON file name, i.e --file clients.json
+    -q, --query KEY=VALUE            Query JSON content i.e --query KEY=VAL
+    -m, --metadata                   Force generation of metadata even if it exists
+    -s, --schema                     Validate JSON against schema
+    -h, --help                       Show help
+```
+
+## Samples:
+
+Querying data using a single `key`
+
+```bash
+# Query data using `full_name`
+./bin/start query -f clients.json -q full_name='jane' 
+```
 
 Output:
 
+```bash
+Filtering by criteria: {full_name: "jane"}
+Found 2 record(s):
+[
+  [0] {
+           :id => 2,
+    :full_name => "Jane Smith",
+        :email => "jane.smith@yahoo.com"
+  },
+  [1] {
+           :id => 15,
+    :full_name => "Another Jane Smith",
+        :email => "jane.smith@yahoo.com"
+  }
+]
+
 ```
 
-Filtering by criteria: {:full_name=>"jane"}
+Querying data using multiple `key`
 
+```bash
+# Query data using `full_name` and `email`
+./bin/start query -f clients.json -q full_name='jane' -q email='john' 
+```
+
+Output:
+
+```bash
+Filtering by criteria: {full_name: "jane", email: "jane"}
+Found 2 record(s):
 [
-
-{:id=>2, :full_name=>"Jane Smith", :email=>"jane.smith@yahoo.com"},
-
-{:id=>3, :full_name=>"Another Jane Smith", :email=>"jane.smith@yahoo.com"}
-
+  [0] {
+           :id => 2,
+    :full_name => "Jane Smith",
+        :email => "jane.smith@yahoo.com"
+  },
+  [1] {
+           :id => 15,
+    :full_name => "Another Jane Smith",
+        :email => "jane.smith@yahoo.com"
+  }
 ]
 
 ```
 
 ### Find Duplicates
 
+```bash
+./bin/start duplicates -f clients.json
+```
+
 ```ruby
 
-duplicates = json_details.query.duplicates
-
-puts duplicates
-
-```
-
-Output:
-
-```
-
+Duplicates:
 [
-
-{:"1"=>{:id=>2, :full_name=>"Jane Smith", :email=>"jane.smith@yahoo.com"}},
-
-{:"2"=>{:id=>3, :full_name=>"Another Jane Smith", :email=>"jane.smith@yahoo.com"}}
-
+    [0] {
+        :"1" => {
+                   :id => 2,
+            :full_name => "Jane Smith",
+                :email => "jane.smith@yahoo.com"
+        }
+    },
+    [1] {
+        :"14" => {
+                   :id => 15,
+            :full_name => "Another Jane Smith",
+                :email => "jane.smith@yahoo.com"
+        }
+    }
 ]
 
+```
+
+### Force metadata generation `-m`
+
+This will generate `metadata` of the `JSON` file provided.
+
+```
+./bin/start filter -f clients.json -q full_name=jane -m
+```
+
+### Show invalid records using schema validation `-s`
+
+JSON schema of this file is **required** for this to work.
+
+```
+./bin/start filter -f clients.json -q full_name=jane -s
 ```
 
 ---
@@ -145,47 +215,14 @@ RSpec is used with sample fixtures.
 Run all specs:
 
 ```bash
-
 bundle exec rspec
-
 ```
-
 ---
-## Examples
 
-### Generate Metadata
+## Note
 
-```ruby
-
-data = Shiftcare::Data.new("clients.json")
-
-data.metadata.generate
-
-puts data.metadata.to_h
-
-```
-### Filter Records
-
-```ruby
-
-results = data.query.where(id: 1)
-
-puts results
-
-```
-
-### Get Duplicates
-
-```ruby
-
-puts data.query.duplicates
-
-```
-
----
-## Roadmap
-
-- Support large datasets with streaming
+**Nice to haves**
+- Use indexing using a JSON index and fully utilize the metadata. (efficiency)
 - Add multiple criteria filtering (`AND`/`OR`)
-- Export data to CSV or YAML
-- Interactive CLI using TTY
+- Proper printing
+- Environment variables for the configurations
