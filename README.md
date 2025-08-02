@@ -1,4 +1,4 @@
-# Shiftcare Data CLI
+# JSON Data CLI
 
 Command-line tool for downloading, validating, and analyzing JSON datasets.
 
@@ -140,7 +140,7 @@ Querying data using multiple `key`
 
 ```bash
 # Query data using `full_name` and `email`
-./bin/start query -f clients.json -q full_name='jane' -q email='john' 
+./bin/start query -f clients.json -q full_name='jane' -q email='jane' 
 ```
 
 Output:

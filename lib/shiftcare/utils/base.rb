@@ -9,31 +9,31 @@ module Shiftcare
         attr_reader :url, :exchange_layer_dir, :download_dir, :metadata_dir, :schema_dir
 
         def url=(value)
-          validate!(value, "URL")
+          validate!(value, 'URL')
 
           @url = value
         end
 
         def exchange_layer_dir=(value)
-          validate!(value, "Exchange Layer Path")
+          validate!(value, 'Exchange Layer Path')
 
           @exchange_layer_dir = value
         end
 
         def metadata_dir=(value)
-          validate!(value, "Metadata Path")
+          validate!(value, 'Metadata Path')
 
           @metadata_dir = value
         end
 
         def download_dir=(value)
-          validate!(value, "Download Path")
+          validate!(value, 'Download Path')
 
           @download_dir = value
         end
 
         def schema_dir=(value)
-          validate!(value, "Schema Path")
+          validate!(value, 'Schema Path')
 
           @schema_dir = value
         end
@@ -57,7 +57,6 @@ module Shiftcare
         def validate!(value, name)
           raise ConfigError, "#{name} cannot be nil or empty" if value.nil? || value.strip.empty?
         end
-
       end
 
       def initialize; end

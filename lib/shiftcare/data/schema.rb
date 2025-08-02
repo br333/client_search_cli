@@ -1,10 +1,10 @@
 # frozen_string_literal: true
+
 require 'pry'
 require 'json'
 require 'json-schema'
 module Shiftcare
   class Data::Schema
-    
     attr_reader :errors, :file, :parser, :data_instance, :properties
 
     def initialize(data_instance)
@@ -20,7 +20,7 @@ module Shiftcare
       if @parser.check_file
         @errors = @data_instance.all.map.with_index do |item, id|
           error = JSON::Validator.fully_validate(definition, item)
-          { index: id, errors: error} unless error.empty?
+          { index: id, errors: error } unless error.empty?
         end.compact
       else
         print "Skipping schema validation, since schema file is not found! \n"
@@ -32,7 +32,7 @@ module Shiftcare
     end
 
     def invalid_items_indexes
-      @errors.map{|error| error[:index]}
+      @errors.map { |error| error[:index] }
     end
 
     def invalid_items_count

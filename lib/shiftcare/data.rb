@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Shiftcare
   class Data
     class TypeError < StandardError; end

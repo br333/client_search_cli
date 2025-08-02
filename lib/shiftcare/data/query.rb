@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Shiftcare
   class Data::Query
     class InvalidInstance < StandardError; end
@@ -17,7 +19,7 @@ module Shiftcare
 
     def where(criteria = {})
       if properties.nil?
-        print("Schema not found, aborting..\n")  
+        print("Schema not found, aborting..\n")
       else
         print("Filtering by criteria: #{criteria}\n")
         validate_criteria!(criteria)
@@ -35,6 +37,7 @@ module Shiftcare
 
     def duplicates
       return [] if @data_instance.metadata.to_h[:duplicates_count].zero?
+
       @data_instance.metadata.to_h[:duplicates].values.flatten
     end
 
@@ -43,28 +46,28 @@ module Shiftcare
     def filter(record, key, value)
       field      = record[key]
       return nil unless field
+
       field_type = properties[key][:type]
       validate_types!(field, field_type, value)
       case field_type
-      when "integer"
+      when 'integer'
         field == value
-      when "string"
+      when 'string'
         field.downcase.include?(value.downcase)
-      else
-        nil
       end
     end
 
     def validate_criteria!(criteria)
-      unless available_filters.include?(criteria.keys.first)
-        raise ValidationError, "Invalid key, available keys are #{available_filters}"
-      end
+      return if available_filters.include?(criteria.keys.first)
+
+      raise ValidationError, "Invalid key, available keys are #{available_filters}"
     end
 
-    def validate_types!(field, field_type, value)
-      unless field_type == value.class.to_s.downcase
-        raise ValidationError, "Invalid content type, content must be #{field_type.upcase} got #{value.class.to_s.upcase}"
-      end
+    def validate_types!(_field, field_type, value)
+      return if field_type == value.class.to_s.downcase
+
+      raise ValidationError,
+            "Invalid content type, content must be #{field_type.upcase} got #{value.class.to_s.upcase}"
     end
 
     def set_defaults

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'pry'
 require 'yajl'
 require 'json'
@@ -25,7 +26,7 @@ module Shiftcare
 
     def to_h
       parser.parse
-   end
+    end
 
     private
 
@@ -35,26 +36,26 @@ module Shiftcare
 
     def duplicates
       @duplicates ||= @data_instance.all.each_with_index
-        .group_by { |(item, _ind)| item[:email] }
-        .select { |_email, records| records.size > 1 }
-        .transform_values { |records| records.map { |item, ind| {"#{ind}": item} } }
+                                    .group_by { |(item, _ind)| item[:email] }
+                                    .select { |_email, records| records.size > 1 }
+                                    .transform_values { |records| records.map { |item, ind| { "#{ind}": item } } }
     end
 
     def build_metadata
       @data_instance.schema.validate!
       @metadata_values = {
-          filename: @data_instance.parser.full_path,
-          size: @data_instance.parser.size,
-          root_type: @data_instance.all.class.to_s,
-          duplicates_count: duplicates.count,
-          duplicates: duplicates,
-          record_length: @data_instance.all.length,
-          keys: @data_instance.all.map(&:keys).uniq.flatten,
-          generated_at: Time.now,
-          schema_path: @data_instance.schema.file,
-          invalid_items_indexes: @data_instance.schema.invalid_items_indexes,
-          invalid_items_count: @data_instance.schema.invalid_items_count,
-        }
+        filename: @data_instance.parser.full_path,
+        size: @data_instance.parser.size,
+        root_type: @data_instance.all.class.to_s,
+        duplicates_count: duplicates.count,
+        duplicates: duplicates,
+        record_length: @data_instance.all.length,
+        keys: @data_instance.all.map(&:keys).uniq.flatten,
+        generated_at: Time.now,
+        schema_path: @data_instance.schema.file,
+        invalid_items_indexes: @data_instance.schema.invalid_items_indexes,
+        invalid_items_count: @data_instance.schema.invalid_items_count
+      }
     end
 
     def set_defaults

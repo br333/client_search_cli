@@ -2,11 +2,12 @@
 
 source 'https://rubygems.org'
 
+gem 'colorize'
 gem 'httparty'
 gem 'json-schema'
-gem 'yajl-ruby'
 gem 'optparse'
-gem 'colorize'
+gem 'yajl-ruby'
+
 group :development do
   gem 'pry'
 end
@@ -16,4 +17,4 @@ group :test do
   gem 'webmock'
 end
 
-gem "awesome_print", "~> 1.9"
+gem 'awesome_print', '~> 1.9'

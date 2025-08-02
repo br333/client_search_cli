@@ -5,5 +5,4 @@ require_relative '../lib/shiftcare'
 require 'irb'
 require 'pry'
 
-
 IRB.start(__FILE__)
