@@ -219,6 +219,21 @@ bundle exec rspec
 ```
 ---
 
+
+### Assumptions
+ 1.	The JSON file does not contain deeply nested keys (flat or shallow structure expected).
+ 2.	The JSON file size is not expected to exceed 10 MB for optimal CLI performance.
+ 3.	A corresponding .schema.json file is provided for each .json data file.
+ 4.	The provided JSON filename exists and matches the URL configuration.
+
+### Limitations
+ 1. Chunk processing is needed for optimal performance when handling large datasets.
+ 2.	JSON files larger than 50 MB may cause performance issues.
+ 3.	File name validation is minimal — incorrect or missing file names may lead to runtime errors.
+ 4.	Current implementation is designed for local CLI execution.
+ 5.	Metadata and schema validation assume the data fits in memory; extremely large datasets may need chunked processing.
+ 6. No indexing.
+
 ## Note
 
 **Nice to haves**
